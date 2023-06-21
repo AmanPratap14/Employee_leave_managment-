@@ -6,7 +6,7 @@ install Packages
 npm i cors express mongoose 
 
 To start server 
-npm start
+#npm start
 
 you will see on console
 Server is running on port 3000
