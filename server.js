@@ -29,7 +29,8 @@ app.use('/api/users', usersRoutes);
 app.use('/api/leaves', leavesRoutes);
 
 // Start the server
-const PORT = 3000;
+const PORT = 3001
+;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

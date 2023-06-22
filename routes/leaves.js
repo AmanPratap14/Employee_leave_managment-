@@ -7,8 +7,6 @@ const User = require('../models/User');
 const { LEAVE_TYPE } = require('../constants');
 
 router.get('', async (req, res) => {
- 
-  
   const leaves = await User.aggregate([{
     $lookup: {
       from: 'leaves',
@@ -23,8 +21,10 @@ router.get('', async (req, res) => {
 // Apply for leave
 router.post('', async (req, res) => {
   try {
-    const { username, leaveType, duration } = req.body;
-    const user = await User.findOne({ _id: new mongoose.Types.ObjectId(username )});
+    const { userid, leaveType, duration, department } = req.body;
+    console.log(userid);
+    const user = await User.findOne({ _id: userid });
+    console.log({user});
     const leaves = await Leave.find({user: user._id});
     const sickLeaves = leaves.filter(leave => leave.leaveType === LEAVE_TYPE.SICK).reduce((acc, curr) => acc + curr.duration, 0);
     const casualLeaves = leaves.filter(leave => leave.leaveType === LEAVE_TYPE.CASUAL).reduce((acc, curr) => acc + curr.duration, 0);
@@ -37,13 +37,15 @@ router.post('', async (req, res) => {
 
     console.log( duration + sickLeaves,  duration + sickLeaves > 2)
 
-    if (leaveType === LEAVE_TYPE.SICK && +duration + sickLeaves > 2) {
+    if (leaveType === LEAVE_TYPE.SICK && + duration + sickLeaves > 2) {
       return res.status(400).json({ error: 'Insufficient sick leaves' });
     }
 
-    if (leaveType === LEAVE_TYPE.CASUAL && +duration + casualLeaves > 2) {
+    if (leaveType === LEAVE_TYPE.CASUAL && + duration + casualLeaves > 2) {
       return res.status(400).json({ error: 'Insufficient casual leaves' });
     }
+
+    console.log("saving", duration)
 
     const leave = await Leave.create({
       user: user._id,
