@@ -3,16 +3,25 @@ const mongoose = require('mongoose');
 const usersRoutes = require('./routes/users');
 const leavesRoutes = require('./routes/leaves');
 const cors = require('cors');
+const dotenv = require('dotenv').config();
+
+
+const Mongoos_URls = process.env.Mongoos_URls;
+
 
 const app = express();
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://root:root123@todoclusters.9lvntdt.mongodb.net/', {
+mongoose.connect(process.env.Mongoos_URls, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+}).then(() => {
+  console.log("connected to DB");
+})
+.catch((err) => {
+  console.log("Error connecting to DB", err)
 });
-
 app.use(cors())
 
 // Use the routes
